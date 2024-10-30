@@ -1,0 +1,30 @@
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe.config
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.pdb
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.AssemblyReference.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Form1.resources
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Properties.Resources.resources
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.GenerateResource.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.CoreCompileInputs.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.exe
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.pdb
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe.config
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.pdb
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.AssemblyReference.cache
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Form1.resources
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Properties.Resources.resources
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.GenerateResource.cache
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.CoreCompileInputs.cache
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.exe
+D:\Desktop\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.pdb
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe.config
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.exe
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\bin\Debug\ImageLoader.pdb
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.AssemblyReference.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Form1.resources
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.Properties.Resources.resources
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.GenerateResource.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.csproj.CoreCompileInputs.cache
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.exe
+D:\Desktop\Processamento de Imagens - 5º Semestre\ConvColors\ConvColors\ImageLoader\ImageLoader\obj\Debug\ImageLoader.pdb
