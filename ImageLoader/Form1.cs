@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -213,28 +215,51 @@ namespace ImageLoader
         {
             if (pictureBox1.Image != null)
             {
-
-                // Obtém as dimensões das imagem
+                // Obtém as dimensões da imagem
                 Bitmap img1 = new Bitmap(pictureBox1.Image);
-                int width = (img1.Width);
-                int height = (img1.Height);
+                int width = img1.Width;
+                int height = img1.Height;
 
                 // Cria uma nova imagem para o resultado
                 Bitmap resultado = new Bitmap(width, height);
 
-                int txValor = Convert.ToInt32(txImg1.Text);
+                // Verifica se a TextBox está vazia
+                if (string.IsNullOrWhiteSpace(txImg1.Text))
+                {
+                    MessageBox.Show("Por favor, insira um valor para o brilho.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int txValor;
+                try
+                {
+                    txValor = Convert.ToInt32(txImg1.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Valida o valor do brilho
                 if (txValor < 0)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser maior que 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser maior ou igual a 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (txValor > 255)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser menor que 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser menor ou igual a 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // Aplica o brilho
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -251,19 +276,15 @@ namespace ImageLoader
                             // Define a cor resultante na nova imagem
                             resultado.SetPixel(x, y, Color.FromArgb(r, g, b));
                         }
-                        catch (FormatException)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (OverflowException)
-                        {
-                            MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
 
+                // Exibe o resultado
                 pictureBoxResult.Image = resultado;
             }
             else
@@ -272,32 +293,57 @@ namespace ImageLoader
             }
         }
 
+
         private void btnSubtBril1_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
             {
-
-                // Obtém as dimensões das imagem
+                // Obtém as dimensões da imagem
                 Bitmap img1 = new Bitmap(pictureBox1.Image);
-                int width = (img1.Width);
-                int height = (img1.Height);
+                int width = img1.Width;
+                int height = img1.Height;
 
                 // Cria uma nova imagem para o resultado
                 Bitmap resultado = new Bitmap(width, height);
 
-                int txValor = Convert.ToInt32(txImg1.Text);
+                // Verifica se a TextBox está vazia
+                if (string.IsNullOrWhiteSpace(txImg1.Text))
+                {
+                    MessageBox.Show("Por favor, insira um valor para o brilho.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int txValor;
+                try
+                {
+                    // Converte o valor da TextBox para inteiro
+                    txValor = Convert.ToInt32(txImg1.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Valida o valor do brilho
                 if (txValor < 0)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser maior que 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser maior ou igual a 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (txValor > 255)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser menor que 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser menor ou igual a 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // Aplica a subtração do brilho na imagem
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -306,7 +352,7 @@ namespace ImageLoader
 
                         try
                         {
-                            // Soma os valores de cor e aplica o limite de 255
+                            // Subtrai os valores de cor e aplica o limite de 0 (não permite valores negativos)
                             int r = Math.Max(cor1.R - txValor, 0);
                             int g = Math.Max(cor1.G - txValor, 0);
                             int b = Math.Max(cor1.B - txValor, 0);
@@ -314,19 +360,15 @@ namespace ImageLoader
                             // Define a cor resultante na nova imagem
                             resultado.SetPixel(x, y, Color.FromArgb(r, g, b));
                         }
-                        catch (FormatException)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (OverflowException)
-                        {
-                            MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
 
+                // Exibe o resultado
                 pictureBoxResult.Image = resultado;
             }
             else
@@ -339,28 +381,52 @@ namespace ImageLoader
         {
             if (pictureBox2.Image != null)
             {
-
-                // Obtém as dimensões das imagem
+                // Obtém as dimensões da imagem
                 Bitmap img1 = new Bitmap(pictureBox2.Image);
-                int width = (img1.Width);
-                int height = (img1.Height);
+                int width = img1.Width;
+                int height = img1.Height;
 
                 // Cria uma nova imagem para o resultado
                 Bitmap resultado = new Bitmap(width, height);
 
-                int txValor = Convert.ToInt32(txImg2.Text);
+                // Verifica se a TextBox está vazia
+                if (string.IsNullOrWhiteSpace(txImg2.Text))
+                {
+                    MessageBox.Show("Por favor, insira um valor para o brilho.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int txValor;
+                try
+                {
+                    // Converte o valor da TextBox para inteiro
+                    txValor = Convert.ToInt32(txImg2.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Valida o valor do brilho
                 if (txValor < 0)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser maior que 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser maior ou igual a 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (txValor > 255)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser menor que 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser menor ou igual a 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // Aplica o brilho na imagem
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -377,19 +443,15 @@ namespace ImageLoader
                             // Define a cor resultante na nova imagem
                             resultado.SetPixel(x, y, Color.FromArgb(r, g, b));
                         }
-                        catch (FormatException)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (OverflowException)
-                        {
-                            MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
 
+                // Exibe o resultado
                 pictureBoxResult.Image = resultado;
             }
             else
@@ -398,33 +460,56 @@ namespace ImageLoader
             }
         }
 
-
         private void btnSubtBril2_Click(object sender, EventArgs e)
         {
             if (pictureBox2.Image != null)
             {
-
-                // Obtém as dimensões das imagem
+                // Obtém as dimensões da imagem
                 Bitmap img1 = new Bitmap(pictureBox2.Image);
-                int width = (img1.Width);
-                int height = (img1.Height);
+                int width = img1.Width;
+                int height = img1.Height;
 
                 // Cria uma nova imagem para o resultado
                 Bitmap resultado = new Bitmap(width, height);
 
-                int txValor = Convert.ToInt32(txImg2.Text);
+                // Verifica se a TextBox está vazia
+                if (string.IsNullOrWhiteSpace(txImg2.Text))
+                {
+                    MessageBox.Show("Por favor, insira um valor para o brilho.", "Erro de Entrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int txValor;
+                try
+                {
+                    // Converte o valor da TextBox para inteiro
+                    txValor = Convert.ToInt32(txImg2.Text);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                catch (OverflowException)
+                {
+                    MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Valida o valor do brilho
                 if (txValor < 0)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser maior que 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser maior ou igual a 0!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 if (txValor > 255)
                 {
-                    MessageBox.Show("Valor de contraste inválido. O valor deve ser menor que 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Valor de brilho inválido. O valor deve ser menor ou igual a 255!", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                // Aplica a subtração do brilho na imagem
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -433,7 +518,7 @@ namespace ImageLoader
 
                         try
                         {
-                            // Soma os valores de cor e aplica o limite de 255
+                            // Subtrai os valores de cor e aplica o limite de 0 (não permite valores negativos)
                             int r = Math.Max(cor1.R - txValor, 0);
                             int g = Math.Max(cor1.G - txValor, 0);
                             int b = Math.Max(cor1.B - txValor, 0);
@@ -441,19 +526,15 @@ namespace ImageLoader
                             // Define a cor resultante na nova imagem
                             resultado.SetPixel(x, y, Color.FromArgb(r, g, b));
                         }
-                        catch (FormatException)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Por favor, insira um valor numérico válido.", "Erro de Formato", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (OverflowException)
-                        {
-                            MessageBox.Show("O valor inserido é muito grande ou muito pequeno. Por favor, insira um valor entre 0 e 255.", "Erro de Overflow", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"Erro inesperado: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
 
+                // Exibe o resultado
                 pictureBoxResult.Image = resultado;
             }
             else
@@ -461,6 +542,7 @@ namespace ImageLoader
                 MessageBox.Show("Por favor, carregue uma imagem!", "Imagem não encontrada", MessageBoxButtons.OK);
             }
         }
+
 
         private void btnSumCont1_Click(object sender, EventArgs e)
         {
@@ -660,6 +742,7 @@ namespace ImageLoader
                 float[,] pixelIntensityB = new float[width, height];
 
                 float.TryParse(txImg2.Text, out float txValor);
+
                 if (txValor < 0)
                 {
                     MessageBox.Show("Valor de contraste inválido. O valor deve ser maior que 0");
@@ -672,15 +755,16 @@ namespace ImageLoader
                     return;
                 }
 
+
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         Color cor1 = img1.GetPixel(x, y);
 
-                        float r = Math.Max(0, cor1.R / txValor);
-                        float g = Math.Max(0, cor1.G / txValor);
-                        float b = Math.Max(0, cor1.B / txValor);
+                        float r = Math.Min(255, cor1.R / txValor);
+                        float g = Math.Min(255, cor1.G / txValor);
+                        float b = Math.Min(255, cor1.B / txValor);
 
                         pixelIntensityR[x, y] = r;
                         pixelIntensityG[x, y] = g;
@@ -1963,7 +2047,7 @@ namespace ImageLoader
 
         private void btOrdem_Click(object sender, EventArgs e)
         {
-            // verificação de radio button
+            // Verificação de radio button
             if (!rbPictureBox11.Checked && !rbPictureBox22.Checked)
             {
                 MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a ordem.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1973,7 +2057,7 @@ namespace ImageLoader
             Bitmap img1 = null;
             PictureBox targetPictureBox = null;
 
-            // se rbPictureBox1 for marcado
+            // Se rbPictureBox1 for marcado
             if (rbPictureBox11.Checked)
             {
                 if (pictureBox1.Image != null)
@@ -2006,29 +2090,30 @@ namespace ImageLoader
                 int largura = img1.Width;
                 int altura = img1.Height;
 
-                // Criar uma nova imagem para armazenar o resultado
                 Bitmap imgFiltrada = new Bitmap(largura, altura);
 
-                // Tenta converter o valor da TextBox para um número inteiro
                 int ordem;
                 bool entrada = int.TryParse(txSuav.Text, out ordem);
 
-                // Verifica se a entrada é um número válido e está no intervalo entre 0 e 8
-                if (!entrada || ordem < 0 || ordem > 8)
+                // verificação do valor de entrada
+                if (!entrada || ordem < 1 || ordem > 9)
                 {
-                    MessageBox.Show("Por favor, insira um valor inteiro entre 0 e 8.");
-                    return; // Interrompe a execução se a entrada não for válida
+                    MessageBox.Show("Por favor, insira um valor inteiro entre 1 e 9.");
+                    return; 
                 }
 
-                // Varrer a imagem pixel por pixel, exceto as bordas
+                // definir a vizinhança
+                int tamanhoVizinhança = 3;
+                int tamanhoMatriz = tamanhoVizinhança * tamanhoVizinhança; 
+
+   
                 for (int y = 1; y < altura - 1; y++)
                 {
                     for (int x = 1; x < largura - 1; x++)
                     {
-                        // Lista para armazenar os valores dos pixels em cada canal de cor
-                        int[] r = new int[9];
-                        int[] g = new int[9];
-                        int[] b = new int[9];
+                        int[] r = new int[tamanhoMatriz];
+                        int[] g = new int[tamanhoMatriz];
+                        int[] b = new int[tamanhoMatriz];
 
                         int count = 0;
 
@@ -2048,28 +2133,24 @@ namespace ImageLoader
                             }
                         }
 
-                        // Ordena os valores para aplicar a filtragem por ordem
                         Array.Sort(r);
                         Array.Sort(g);
                         Array.Sort(b);
 
-                        // Obtém o valor correspondente à ordem escolhida
-                        int ordemR = r[ordem];
-                        int ordemG = g[ordem];
-                        int ordemB = b[ordem];
+                        int ordemR = r[ordem - 1]; // a ordem é 1-based, então subtrai-se 1 para acessar o índice correto
+                        int ordemG = g[ordem - 1];
+                        int ordemB = b[ordem - 1];
 
-                        // Define o novo valor do pixel na imagem filtrada com os valores ordenados
                         imgFiltrada.SetPixel(x, y, Color.FromArgb(ordemR, ordemG, ordemB));
                     }
                 }
-
                 pictureBoxResult.Image = imgFiltrada;
             }
         }
 
         private void btSuavizacao_Click(object sender, EventArgs e)
         {
-            // verificação de radio button
+            // Verificação de radio button
             if (!rbPictureBox11.Checked && !rbPictureBox22.Checked)
             {
                 MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a suavização.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2079,7 +2160,7 @@ namespace ImageLoader
             Bitmap img1 = null;
             PictureBox targetPictureBox = null;
 
-            // se rbPictureBox1 for marcado
+            // Se rbPictureBox1 for marcado
             if (rbPictureBox11.Checked)
             {
                 if (pictureBox1.Image != null)
@@ -2121,17 +2202,19 @@ namespace ImageLoader
                     for (int x = 1; x < largura - 1; x++)
                     {
                         // Listas para armazenar os valores dos pixels em cada canal de cor
-                        int[] r = new int[9];
-                        int[] g = new int[9];
-                        int[] b = new int[9];
+                        int[] r = new int[8];
+                        int[] g = new int[8];
+                        int[] b = new int[8];
 
                         int count = 0;
 
-                        // Varre a matriz 3x3 ao redor do pixel (x, y)
+                        // Varre a matriz 3x3 ao redor do pixel (x, y), excluindo o próprio pixel central
                         for (int j = -1; j <= 1; j++)
                         {
                             for (int i = -1; i <= 1; i++)
                             {
+                                if (i == 0 && j == 0) continue; // Ignora o próprio pixel central
+
                                 // Pega o pixel vizinho
                                 Color pixel = img1.GetPixel(x + i, y + j);
 
@@ -2157,10 +2240,26 @@ namespace ImageLoader
                         int minB = b.Min();
                         int maxB = b.Max();
 
-                        // Calcula os novos valores para cada canal
-                        int novoR = Math.Max(minR, Math.Min(centralR, maxR));
-                        int novoG = Math.Max(minG, Math.Min(centralG, maxG));
-                        int novoB = Math.Max(minB, Math.Min(centralB, maxB));
+                        // Calcula os novos valores para cada canal de cor de forma conservativa
+                        int novoR = centralR;
+                        int novoG = centralG;
+                        int novoB = centralB;
+
+                        // Comparação e ajuste do valor do pixel
+                        if (centralR < minR)
+                            novoR = minR;
+                        else if (centralR > maxR)
+                            novoR = maxR;
+
+                        if (centralG < minG)
+                            novoG = minG;
+                        else if (centralG > maxG)
+                            novoG = maxG;
+
+                        if (centralB < minB)
+                            novoB = minB;
+                        else if (centralB > maxB)
+                            novoB = maxB;
 
                         // Define o novo valor do pixel na imagem filtrada
                         imgFiltrada.SetPixel(x, y, Color.FromArgb(novoR, novoG, novoB));
@@ -2169,27 +2268,112 @@ namespace ImageLoader
 
                 // Atualiza a PictureBox com a imagem filtrada
                 pictureBoxResult.Image = imgFiltrada;
-
             }
         }
 
-        private byte[,] convBefore;
-        private byte[,] convAfter;
+
+        private int[,] convBefore;
+        private int[,] convAfter;
 
         private void btGaussiano_Click(object sender, EventArgs e)
         {
-            // verificação de radio button
-            if (!rbPictureBox11.Checked && !rbPictureBox22.Checked)
+              if (pictureBox1.Image == null)
             {
-                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a suavização.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, selecione uma imagem!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                if (txSuav.Text == "")
+                {
+                    MessageBox.Show("Por favor, informe um valor entre 0 e 8!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    convBefore = new int[img1.Width, img1.Height];  
+                    convAfter = new int[img1.Width, img1.Height];   
+
+                    double sigma = Convert.ToDouble(txSuav.Text);
+                    double[,] GKernel = new double[5, 5];
+                    double sum = 0;
+
+                    // Gerar o kernel 5x5
+                    for (int x = -2; x <= 2; x++)
+                    {
+                        for (int y = -2; y <= 2; y++)
+                        {
+                            double coefficient = 1.0f / (2.0f * Math.PI * sigma * sigma);
+                            double exponent = -(x * x + y * y) / (2.0f * sigma * sigma);
+                            GKernel[x + 2, y + 2] = coefficient * Math.Exp(exponent);
+                            sum += GKernel[x + 2, y + 2];
+                        }
+                    }
+
+                    // Normalizar o kernel
+                    for (int i = 0; i < 5; i++)
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            GKernel[i, j] /= sum;
+                        }
+                    }
+
+                    // Percorrer todos os pixels da imagem
+                    for (int i = 0; i < img1.Width; i++)
+                    {
+                        for (int j = 0; j < img1.Height; j++)
+                        {
+                            Color pixel = img1.GetPixel(i, j);
+                            // Para imagens em escala de cinza, extrair o valor do pixel
+                            int pixelIntensity = (pixel.R + pixel.G + pixel.B) / 3;
+                            convBefore[i, j] = pixelIntensity;
+                        }
+                    }
+
+                    // Aplicar o filtro Gaussiano
+                    for (int x = 2; x < img1.Width - 2; x++)
+                    { 
+                        for (int y = 2; y < img1.Height - 2; y++)
+                        {
+                            int pixel = 0;
+
+                            // Aplicar o kernel sobre o pixel
+                            for (int i = 0; i < 5; i++)
+                            {
+                                for (int j = 0; j < 5; j++)
+                                {
+                                    pixel += (int)(GKernel[i, j] * convBefore[x - 2 + i, y - 2 + j]);
+                                }
+                            }
+
+
+                            convAfter[x, y] = pixel;
+
+                            Color cor = Color.FromArgb(255, convAfter[x, y], convAfter[x, y], convAfter[x, y]);
+                            img1.SetPixel(x, y, cor);
+                        }
+                    }
+
+                    pictureBoxResult.Image = img1;
+                }
+            }
+        }
+
+
+        private void btnPrewitt_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbBordas1.Checked && !rbBordas2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar o filtro de Prewitt.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             Bitmap img1 = null;
             PictureBox targetPictureBox = null;
 
-            // se rbPictureBox1 for marcado
-            if (rbPictureBox11.Checked)
+            // Se rbPictureBox1 for marcado
+            if (rbBordas1.Checked)
             {
                 if (pictureBox1.Image != null)
                 {
@@ -2202,7 +2386,7 @@ namespace ImageLoader
                     return;
                 }
             }
-            else if (rbPictureBox22.Checked)
+            else if (rbBordas2.Checked)
             {
                 if (pictureBox2.Image != null)
                 {
@@ -2216,145 +2400,706 @@ namespace ImageLoader
                 }
             }
 
-            if (txSuav.Text == "")
+            if (img1 != null)
             {
-                MessageBox.Show("Por favor, informe um valor entre 0 e 8!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                img1 = new Bitmap(img1.Width, img1.Height);
-                convBefore = new byte[img1.Width, img1.Height];
-                convAfter = new byte[img1.Width, img1.Height];
+                int largura = img1.Width;
+                int altura = img1.Height;
 
-                double sigma = Convert.ToDouble(txSuav.Text);
-                double[,] GKernel;
-                GKernel = new double[5, 5];
-                double sum = 0;
-                double[,] mask = new double[5, 5];
+                // Criar uma nova imagem para armazenar o resultado
+                Bitmap imgFiltrada = new Bitmap(largura, altura);
 
-
-                //gerar o kernel 5x5
-                for (int x = -2; x <= 2; x++)
+                // Definindo os kernels de Prewitt
+                int[,] Gx = new int[3, 3]
                 {
-                    for (int y = -2; y <= 2; y++)
-                    {
-                        double coefficient = 1.0f / (2.0f * Math.PI * sigma * sigma);
-                        double exponent = -(x * x + y * y) / (2.0f * sigma * sigma);
-                        GKernel[x + 2, y + 2] = coefficient * Math.Exp(exponent);
+            { -1, 0, 1 },
+            { -1, 0, 1 },
+            { -1, 0, 1 }
+                };
 
-                        sum += GKernel[x + 2, y + 2];
-
-                    }
-                }
-
-                //Imprime o Kerner gaussiano
-                StreamWriter sw = new StreamWriter("GaussianKernel.txt");
-                sw.WriteLine("Sigma: {0:f2}", sigma);
-                sw.WriteLine("Sum: {0:f2}", sum);
-                for (int i = 0; i < 5; i++)
+                int[,] Gy = new int[3, 3]
                 {
-                    for (int j = 0; j < 5; j++)
-                    {
-                        sw.Write(String.Format("{0:f2}", GKernel[i, j]) + "\t");
-                    }
+            { -1, -1, -1 },
+            {  0,  0,  0 },
+            {  1,  1,  1 }
+                };
 
-                    sw.WriteLine(); //próxima linha
-                }
-
-                sw.Close();
-
-                //normalizar o kernel
-                for (int i = 0; i < 5; i++)
+                // Varrer a imagem pixel por pixel
+                for (int y = 1; y < altura - 1; y++)
                 {
-                    for (int j = 0; j < 5; j++)
+                    for (int x = 1; x < largura - 1; x++)
                     {
-                        GKernel[i, j] /= sum;
-                    }
-                }
+                        int gradienteX_R = 0, gradienteX_G = 0, gradienteX_B = 0;
+                        int gradienteY_R = 0, gradienteY_G = 0, gradienteY_B = 0;
 
-                // Percorre todos os pixels da imagem...
-                for (int i = 0; i < img1.Width; i++)
-                {
-                    for (int j = 0; j < img1.Height; j++)
-                    {
-                        Color pixel = img1.GetPixel(i, j);
-
-                        // Para imagens em escala de cinza, extrair o valor do pixel com...
-                        byte pixelIntensity = Convert.ToByte((pixel.R + pixel.G + pixel.B) / 3);
-
-                        convBefore[i, j] = pixelIntensity;
-
-                    }
-                }
-
-                //aplicar o filtro
-                for (int x = 2; x < img1.Width - 2; x++)
-                {
-                    for (int y = 2; y < img1.Height - 2; y++)
-                    {
-
-
-                        mask[0, 0] = (byte)(GKernel[0, 0] * convBefore[x - 2, y - 2]);
-                        mask[0, 1] = (byte)(GKernel[0, 1] * convBefore[x - 2, y - 1]);
-                        mask[0, 2] = (byte)(GKernel[0, 2] * convBefore[x - 2, y]);
-                        mask[0, 3] = (byte)(GKernel[0, 3] * convBefore[x - 2, y + 1]);
-                        mask[0, 4] = (byte)(GKernel[0, 4] * convBefore[x - 2, y + 2]);
-
-                        mask[1, 0] = (byte)(GKernel[1, 0] * convBefore[x - 1, y - 2]);
-                        mask[1, 1] = (byte)(GKernel[1, 1] * convBefore[x - 1, y - 1]);
-                        mask[1, 2] = (byte)(GKernel[1, 2] * convBefore[x - 1, y]);
-                        mask[1, 3] = (byte)(GKernel[1, 3] * convBefore[x - 1, y + 1]);
-                        mask[1, 4] = (byte)(GKernel[1, 4] * convBefore[x - 1, y + 2]);
-
-                        mask[2, 0] = (byte)(GKernel[2, 0] * convBefore[x, y - 2]);
-                        mask[2, 1] = (byte)(GKernel[2, 1] * convBefore[x, y - 1]);
-                        mask[2, 2] = (byte)(GKernel[2, 2] * convBefore[x, y]);
-                        mask[2, 3] = (byte)(GKernel[2, 3] * convBefore[x, y + 1]);
-                        mask[2, 4] = (byte)(GKernel[2, 4] * convBefore[x, y + 2]);
-
-                        mask[3, 0] = (byte)(GKernel[3, 0] * convBefore[x + 1, y - 2]);
-                        mask[3, 1] = (byte)(GKernel[3, 1] * convBefore[x + 1, y - 1]);
-                        mask[3, 2] = (byte)(GKernel[3, 2] * convBefore[x + 1, y]);
-                        mask[3, 3] = (byte)(GKernel[3, 3] * convBefore[x + 1, y + 1]);
-                        mask[3, 4] = (byte)(GKernel[3, 4] * convBefore[x + 1, y + 2]);
-
-                        mask[4, 0] = (byte)(GKernel[4, 0] * convBefore[x + 2, y - 2]);
-                        mask[4, 1] = (byte)(GKernel[4, 1] * convBefore[x + 2, y - 1]);
-                        mask[4, 2] = (byte)(GKernel[4, 2] * convBefore[x + 2, y]);
-                        mask[4, 3] = (byte)(GKernel[4, 3] * convBefore[x + 2, y + 1]);
-                        mask[4, 4] = (byte)(GKernel[4, 4] * convBefore[x + 2, y + 2]);
-
-
-                        //Soma todos os elementos da vizinhança 
-                        //A soma será o valor final do pixel
-
-                        int pixel = 0;
-
-                        for (int i = 0; i < 5; i++)
+                        // Convolução para Gx (derivada no eixo X)
+                        for (int j = -1; j <= 1; j++)
                         {
-                            for (int j = 0; j < 5; j++)
+                            for (int i = -1; i <= 1; i++)
                             {
-                                pixel += (int)mask[i, j];
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                gradienteX_R += Gx[j + 1, i + 1] * pixel.R;
+                                gradienteX_G += Gx[j + 1, i + 1] * pixel.G;
+                                gradienteX_B += Gx[j + 1, i + 1] * pixel.B;
+
+                                gradienteY_R += Gy[j + 1, i + 1] * pixel.R;
+                                gradienteY_G += Gy[j + 1, i + 1] * pixel.G;
+                                gradienteY_B += Gy[j + 1, i + 1] * pixel.B;
                             }
                         }
 
-                        convAfter[x, y] = Convert.ToByte(pixel);
+                        // Calcular a magnitude do gradiente para cada canal de cor
+                        int gradiente_R = (int)Math.Min(255, Math.Sqrt(gradienteX_R * gradienteX_R + gradienteY_R * gradienteY_R));
+                        int gradiente_G = (int)Math.Min(255, Math.Sqrt(gradienteX_G * gradienteX_G + gradienteY_G * gradienteY_G));
+                        int gradiente_B = (int)Math.Min(255, Math.Sqrt(gradienteX_B * gradienteX_B + gradienteY_B * gradienteY_B));
 
-                        Color cor = Color.FromArgb(
-                                255,
-                                convAfter[x, y],
-                                convAfter[x, y],
-                                convAfter[x, y]);
-
-                        img1.SetPixel(x, y, cor);
-
+                        // Definir o novo valor do pixel na imagem filtrada
+                        imgFiltrada.SetPixel(x, y, Color.FromArgb(gradiente_R, gradiente_G, gradiente_B));
                     }
                 }
-                pictureBoxResult.Image = img1;
+
+                // Atualizar a PictureBox com a imagem resultante
+                pictureBoxResult.Image = imgFiltrada;
             }
         }
 
-            private void Form1_Load(object sender, EventArgs e)
+        private void btnSobel_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbBordas1.Checked && !rbBordas2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar o filtro Sobel.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            // Se rbPictureBox1 for marcado
+            if (rbBordas1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbBordas2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgFiltrada = new Bitmap(largura, altura);
+
+                // kernel de sobel
+                int[,] Gx = new int[3, 3]
+                {
+            { -1,  0,  1 },
+            { -2,  0,  2 },
+            { -1,  0,  1 }
+                };
+
+                int[,] Gy = new int[3, 3]
+                {
+            { -1, -2, -1 },
+            {  0,  0,  0 },
+            {  1,  2,  1 }
+                };
+
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int gradienteX_R = 0, gradienteX_G = 0, gradienteX_B = 0;
+                        int gradienteY_R = 0, gradienteY_G = 0, gradienteY_B = 0;
+
+                        // convolução para Gx e Gy 
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                gradienteX_R += Gx[j + 1, i + 1] * pixel.R;
+                                gradienteX_G += Gx[j + 1, i + 1] * pixel.G;
+                                gradienteX_B += Gx[j + 1, i + 1] * pixel.B;
+
+                                gradienteY_R += Gy[j + 1, i + 1] * pixel.R;
+                                gradienteY_G += Gy[j + 1, i + 1] * pixel.G;
+                                gradienteY_B += Gy[j + 1, i + 1] * pixel.B;
+                            }
+                        }
+
+                        // Calcular a magnitude do gradiente para cada canal de cor
+                        int gradiente_R = (int)Math.Min(255, Math.Sqrt(gradienteX_R * gradienteX_R + gradienteY_R * gradienteY_R));
+                        int gradiente_G = (int)Math.Min(255, Math.Sqrt(gradienteX_G * gradienteX_G + gradienteY_G * gradienteY_G));
+                        int gradiente_B = (int)Math.Min(255, Math.Sqrt(gradienteX_B * gradienteX_B + gradienteY_B * gradienteY_B));
+
+                        // Definir o novo valor do pixel na imagem filtrada
+                        imgFiltrada.SetPixel(x, y, Color.FromArgb(gradiente_R, gradiente_G, gradiente_B));
+                    }
+                }
+
+                // Atualizar a PictureBox com a imagem resultante
+                pictureBoxResult.Image = imgFiltrada;
+            }
+        }
+        private void btnLaplaciano_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbBordas1.Checked && !rbBordas2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar o filtro Laplaciano.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            // Se rbPictureBox1 for marcado
+            if (rbBordas1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbBordas2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                // Criar uma nova imagem para armazenar o resultado
+                Bitmap imgFiltrada = new Bitmap(largura, altura);
+
+                // Definindo o kernel de Laplaciano
+                int[,] kernel = new int[3, 3]
+                {
+            {  0,  1,  0 },
+            {  1, -4,  1 },
+            {  0,  1,  0 }
+                };
+
+                // Varrer a imagem pixel por pixel, ignorando as bordas (pixels da primeira e última linha/coluna)
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int somaR = 0, somaG = 0, somaB = 0;
+
+                        // Convolução do kernel com a imagem
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                somaR += kernel[j + 1, i + 1] * pixel.R;
+                                somaG += kernel[j + 1, i + 1] * pixel.G;
+                                somaB += kernel[j + 1, i + 1] * pixel.B;
+                            }
+                        }
+
+                        // A intensidade resultante (magnitude) do pixel filtrado
+                        int newR = Math.Min(255, Math.Max(0, Math.Abs(somaR)));
+                        int newG = Math.Min(255, Math.Max(0, Math.Abs(somaG)));
+                        int newB = Math.Min(255, Math.Max(0, Math.Abs(somaB)));
+
+                        // Definir o novo valor do pixel filtrado
+                        imgFiltrada.SetPixel(x, y, Color.FromArgb(newR, newG, newB));
+                    }
+                }
+
+                // Atualizar a PictureBox com a imagem filtrada
+                pictureBoxResult.Image = imgFiltrada;
+            }
+        }
+
+        private void btnDilat_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbMorf1.Checked && !rbMorf2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a dilatação.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            if (rbMorf1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbMorf2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgDilatada = new Bitmap(largura, altura);
+
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int maxR = 0, maxG = 0, maxB = 0;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                maxR = Math.Max(maxR, pixel.R);
+                                maxG = Math.Max(maxG, pixel.G);
+                                maxB = Math.Max(maxB, pixel.B);
+                            }
+                        }
+
+                        // valor maximo de cada canal
+                        imgDilatada.SetPixel(x, y, Color.FromArgb(maxR, maxG, maxB));
+                    }
+                }
+
+                pictureBoxResult.Image = imgDilatada;
+            }
+        }
+
+        private void btnAbertura_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbMorf1.Checked && !rbMorf2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a abertura.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            if (rbMorf1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbMorf2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgAbertura = new Bitmap(largura, altura);
+
+                // realiza a erosão primeiramente
+                Bitmap imgErosao = new Bitmap(largura, altura);
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int minR = 255, minG = 255, minB = 255;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                minR = Math.Min(minR, pixel.R);
+                                minG = Math.Min(minG, pixel.G);
+                                minB = Math.Min(minB, pixel.B);
+                            }
+                        }
+
+                        // valor minimo de cada canal
+                        imgErosao.SetPixel(x, y, Color.FromArgb(minR, minG, minB));
+                    }
+                }
+
+                // aplica dilatação na imagem da erosão
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int maxR = 0, maxG = 0, maxB = 0;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = imgErosao.GetPixel(x + i, y + j);
+
+                                maxR = Math.Max(maxR, pixel.R);
+                                maxG = Math.Max(maxG, pixel.G);
+                                maxB = Math.Max(maxB, pixel.B);
+                            }
+                        }
+
+                        // valor maximo de cada canal
+                        imgAbertura.SetPixel(x, y, Color.FromArgb(maxR, maxG, maxB));
+                    }
+                }
+
+                pictureBoxResult.Image = imgAbertura;
+            }
+        }
+
+        private void btnFechamento_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbMorf1.Checked && !rbMorf2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar o fechamento.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            if (rbMorf1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbMorf2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgFechamento = new Bitmap(largura, altura);
+
+                // dilatação
+                Bitmap imgDilatada = new Bitmap(largura, altura);
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int maxR = 0, maxG = 0, maxB = 0;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                maxR = Math.Max(maxR, pixel.R);
+                                maxG = Math.Max(maxG, pixel.G);
+                                maxB = Math.Max(maxB, pixel.B);
+                            }
+                        }
+
+                        // valor maximo de cada canal de cor
+                        imgDilatada.SetPixel(x, y, Color.FromArgb(maxR, maxG, maxB));
+                    }
+                }
+
+                // aplica erosão após a dilatação
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int minR = 255, minG = 255, minB = 255;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = imgDilatada.GetPixel(x + i, y + j);
+
+                                minR = Math.Min(minR, pixel.R);
+                                minG = Math.Min(minG, pixel.G);
+                                minB = Math.Min(minB, pixel.B);
+                            }
+                        }
+
+                        // valor minimo de cada canal
+                        imgFechamento.SetPixel(x, y, Color.FromArgb(minR, minG, minB));
+                    }
+                }
+
+                // Atualizar a PictureBox com a imagem resultante do fechamento
+                pictureBoxResult.Image = imgFechamento;
+            }
+        }
+
+        private void btnContorno_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbMorf1.Checked && !rbMorf2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar o contorno.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            if (rbMorf1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbMorf2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgContorno = new Bitmap(largura, altura);
+
+                // kernel de sobel para bordas
+                int[,] kernelX = new int[3, 3]
+                {
+            { -1, 0, 1 },
+            { -2, 0, 2 },
+            { -1, 0, 1 }
+                };
+
+                int[,] kernelY = new int[3, 3]
+                {
+            { -1, -2, -1 },
+            { 0, 0, 0 },
+            { 1, 2, 1 }
+                };
+
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int somaXr = 0, somaXg = 0, somaXb = 0;
+                        int somaYr = 0, somaYg = 0, somaYb = 0;
+
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                // kernelX
+                                somaXr += kernelX[j + 1, i + 1] * pixel.R;
+                                somaXg += kernelX[j + 1, i + 1] * pixel.G;
+                                somaXb += kernelX[j + 1, i + 1] * pixel.B;
+
+                                // kernelY
+                                somaYr += kernelY[j + 1, i + 1] * pixel.R;
+                                somaYg += kernelY[j + 1, i + 1] * pixel.G;
+                                somaYb += kernelY[j + 1, i + 1] * pixel.B;
+                            }
+                        }
+
+                        // calcular o gradiente para cada canal de cor
+                        int magnitudeR = Math.Min(255, (int)Math.Sqrt(somaXr * somaXr + somaYr * somaYr));
+                        int magnitudeG = Math.Min(255, (int)Math.Sqrt(somaXg * somaXg + somaYg * somaYg));
+                        int magnitudeB = Math.Min(255, (int)Math.Sqrt(somaXb * somaXb + somaYb * somaYb));
+
+                        imgContorno.SetPixel(x, y, Color.FromArgb(magnitudeR, magnitudeG, magnitudeB));
+                    }
+                }
+
+                pictureBoxResult.Image = imgContorno;
+            }
+        }
+
+        private void btnErosao_Click(object sender, EventArgs e)
+        {
+            // Verificação de radio button
+            if (!rbMorf1.Checked && !rbMorf2.Checked)
+            {
+                MessageBox.Show("Por favor, selecione uma PictureBox para aplicar a erosão.", "Nenhuma PictureBox Selecionada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Bitmap img1 = null;
+            PictureBox targetPictureBox = null;
+
+            // Se rbMorf1 for marcado
+            if (rbMorf1.Checked)
+            {
+                if (pictureBox1.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox1.Image);
+                    targetPictureBox = pictureBox1;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 1!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else if (rbMorf2.Checked)
+            {
+                if (pictureBox2.Image != null)
+                {
+                    img1 = new Bitmap(pictureBox2.Image);
+                    targetPictureBox = pictureBox2;
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, carregue uma imagem na PictureBox 2!", "Imagem não encontrada", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (img1 != null)
+            {
+                int largura = img1.Width;
+                int altura = img1.Height;
+
+                Bitmap imgErosao = new Bitmap(largura, altura);
+
+                for (int y = 1; y < altura - 1; y++)
+                {
+                    for (int x = 1; x < largura - 1; x++)
+                    {
+                        int minR = 255, minG = 255, minB = 255;
+
+                        // verificar os 8 vizinhos e o pixel
+                        for (int j = -1; j <= 1; j++)
+                        {
+                            for (int i = -1; i <= 1; i++)
+                            {
+                                Color pixel = img1.GetPixel(x + i, y + j);
+
+                                minR = Math.Min(minR, pixel.R);
+                                minG = Math.Min(minG, pixel.G);
+                                minB = Math.Min(minB, pixel.B);
+                            }
+                        }
+
+                        imgErosao.SetPixel(x, y, Color.FromArgb(minR, minG, minB));
+                    }
+                }
+
+                pictureBoxResult.Image = imgErosao;
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
