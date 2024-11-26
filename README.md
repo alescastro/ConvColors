@@ -12,7 +12,6 @@ Este é um software desenvolvido em C# para aplicação de filtros em imagens, c
 
 - **Linguagem**: C#
 - **Framework**: .NET
-- **Bibliotecas**: (Se você estiver usando alguma biblioteca específica, como OpenCV ou AForge.NET, adicione aqui.)
 
 ## Pré-Requisitos
 
