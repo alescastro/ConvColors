@@ -59,6 +59,6 @@ Este projeto está licenciado sob a MIT License.
 **Contato**
 Se você tiver dúvidas ou sugestões, sinta-se à vontade para abrir uma "issue" no repositório ou entrar em contato diretamente comigo.
 
-**Autor: ALexandre Steffen Castro**
+**Autor: Alexandre Steffen Castro**
 Repositório: https://github.com/alescastro/ConvColors
 
